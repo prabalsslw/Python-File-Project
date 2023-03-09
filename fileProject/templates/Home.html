@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>User Book</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <br>
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <ul class="nav nav-pills">
+                        <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+                        <li><a data-toggle="pill" href="#menu1">Create User</a></li>
+                        <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+                        <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-warning">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active">
+                            <h3>Home</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Gender</th>
+                                        <th>About</th>
+                                        <th>Profile Picture</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pro in profiles %}
+                                    <tr>
+                                        <td>{{pro.fullname}}</td>
+                                        <td>{{pro.email}}</td>
+                                        <td>{{pro.phone}}</td>
+                                        <td>{{pro.gender}}</td>
+                                        <td>{{pro.about}}</td>
+                                        <td><img src="media/{{pro.propic}}" class="img-thumbnail" height="80" width="90" alt="{{pro.fullname}}"></td>
+                                        <td><a href="#" onclick="deleteConfirm({{pro.id}})"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a> | <a href="#" data-toggle="modal" data-target="#updateModal{{pro.id}}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                                    </tr>
+                                    <div id="updateModal{{pro.id}}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Edit Profile | {{pro.fullname}}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{% url 'userupdate' %}" enctype="multipart/form-data" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="pid" value="{{pro.id}}">
+                                                        <div class="form-group">
+                                                            <label for="email">Full Name</label>
+                                                            <input type="text" class="form-control" name="fullname" required autocomplete="off" placeholder="Full Name" value="{{pro.fullname}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="email">Email</label>
+                                                            <input type="email" class="form-control" name="email" required autocomplete="off" placeholder="Email" value="{{pro.email}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="phone">Phone</label>
+                                                            <input type="text" type="tel" class="form-control" pattern="[0]{1}[1]{1}[3-9]{1}[0-9]{8}" name="phone" required autocomplete="off" placeholder="Phone" value="{{pro.phone}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="email">Gender</label>
+                                                            <div class="radio">
+                                                                <label><input type="radio" name="gender" value="Male" required {% if pro.gender == 'Male' %} checked {% endif %}>Male</label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label><input type="radio" name="gender" value="Female" required {% if pro.gender == 'Female' %} checked {% endif %}>Female</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="about">About You</label>
+                                                            <input type="text" class="form-control" name="about" autocomplete="off" placeholder="About You" value="{{pro.about}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="about">Profile Picture</label>
+                                                            <input type="file" class="form-control" name="propic" placeholder="Profile Picture" value="{{pro.propic}}" />
+                                                            <img src="media/{{pro.propic}}" class="img-thumbnail" height="80" width="90" alt="{{pro.fullname}}">
+                                                        </div>
+                                                        
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-danger">Update</button>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                </div>
+                                                
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="menu1" class="tab-pane fade">
+                            <h3>Create User</h3><hr>
+                            <div class="col-md-6 col-md-offset-3">
+                                <form action="{% url 'usercreate' %}" enctype="multipart/form-data" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="email">Full Name</label>
+                                        <input type="text" class="form-control" name="fullname" required autocomplete="off" placeholder="Full Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" name="email" required autocomplete="off" placeholder="Email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="text" type="tel" class="form-control" pattern="[0]{1}[1]{1}[3-9]{1}[0-9]{8}" name="phone" required autocomplete="off" placeholder="Phone">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Gender</label>
+                                        <div class="radio">
+                                            <label><input type="radio" name="gender" required value="Male">Male</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="gender" required value="Female">Female</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="about">About You</label>
+                                        <input type="text" class="form-control" name="about" autocomplete="off" placeholder="About You">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="about">Profile Picture</label>
+                                        <input type="file" class="form-control" name="propic" placeholder="Profile Picture"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Submit</button>
+                                </form>
+                            </div>
+                            <br><br>
+                        </div>
+                        <div id="menu2" class="tab-pane fade">
+                            <h3>Menu 2</h3>
+                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                        </div>
+                        <div id="menu3" class="tab-pane fade">
+                            <h3>Menu 3</h3>
+                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        function deleteConfirm(id) {
+            let text = "Are you sure, want to delete the profile?";
+            if (confirm(text) == true) {
+                window.location.href = "delete/"+id;
+            } else {
+                console.log("Not deleted")
+            }
+        }
+        </script>
+</html>
