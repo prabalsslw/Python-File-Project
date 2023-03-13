@@ -64,11 +64,10 @@ def updateProfile(request):
 
             if request.FILES.get('propic'):
                 propic = request.FILES['propic']
+                if os.path.isfile(profileid.propic.path):
+                    os.remove(profileid.propic.path)
             else:
                 propic = profileid.propic
-        
-            if os.path.isfile(profileid.propic.path):
-                os.remove(profileid.propic.path)
                 
             profileid.fullname = fullname
             profileid.email = email
